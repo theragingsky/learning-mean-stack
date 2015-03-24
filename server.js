@@ -3,26 +3,20 @@ var bodyParser = require('body-parser')
 
 var app = express()
 app.use(bodyParser.json())
+app.use('/api/posts',require('./controllers/api/posts'))
 
-app.get('/api/posts', function (req, res, next) {
-    Post.find(function(err,posts) {
-        if (err) {return next(err)}
-        res.json(posts)
-    })
-});
 
-var Post = require('./models/post')
-app.post('/api/posts', function (req, res, next) {
-    var post = new Post({
-        username: req.body.username,
-        body: req.body.body
-    })
-    post.save(function (err, post) {
+app.get('/', function (req, res) {
+    res.sendfile('layouts/posts.html', function (err){
         if (err) {
-            return next(err)
+            console.log(err);
+            res.status(err.status).end();
         }
-        res.json(201, post)
-    })
+        
+        else {
+            console.log('Sent:', 'layouts/posts.html');
+        }
+    });
 })
 
 app.listen(3000, function () {
